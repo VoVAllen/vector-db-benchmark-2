@@ -44,7 +44,7 @@ def run(
         datasets: str = "*",
         host: str = "localhost",
         port: int = 8123,
-        skip_upload: bool = False,
+        upload: bool = False,
 
         s3_auto_upload: bool = False,  # whether to upload to S3
         s3_region: str = "beijing",
@@ -62,6 +62,8 @@ def run(
     """
     all_engines = read_engine_configs()
     all_datasets = read_dataset_config()
+
+    skip_upload = not upload
 
     # waiting for server online
     if wait_server_online:

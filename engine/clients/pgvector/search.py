@@ -38,8 +38,8 @@ class PGVectorSearcher(BaseSearcher):
                 else:
                     # pgvector_rs only support hnsw
                     cur.execute(f"SET LOCAL vectors.k = {cls.search_params['params']['hnsw.ef_search']};")
+                    cur.execute(f"SET LOCAL vectors.vbase_range = {cls.search_params['params']['vbase_range']};")
                     break
-
             meta_conditions = cls.parser.parse(meta_conditions)
             if meta_conditions:
                 search_command = f"SELECT id, vector {cls.distance} '{vector}' as dis FROM {PGVECTOR_INDEX} where {meta_conditions} order by dis ASC LIMIT {top}"

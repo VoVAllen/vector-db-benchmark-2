@@ -74,12 +74,8 @@ class PGVectorUploader(BaseUploader):
         if cls.engine_type == "rust":
             create_index_command = f"""
 CREATE INDEX ON {PGVECTOR_INDEX} USING vectors (vector {cls.distance}) WITH (options=$$
-capacity = {int(cls.vector_count*1.2)}
-[vectors]
-memmap = "ram"
+optimizing.optimizing_threads=8
 [algorithm.hnsw]
-memmap = "ram"
-{index_options_rust}
 $$);
 """
 
