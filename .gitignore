@@ -10,3 +10,7 @@ scripts/__pycache__
 experiments/test
 venv/
 .venv
+results*
+[1-9].json
+stats.txt
+1.md

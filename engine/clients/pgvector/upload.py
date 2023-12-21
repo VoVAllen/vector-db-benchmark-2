@@ -30,7 +30,7 @@ class PGVectorUploader(BaseUploader):
             raise RuntimeError("PGVector batch upload unhealthy")
         # Getting the names of structured data columns based on the first meta information.
         col_name_tuple = ('id', 'vector')
-        col_type_tuple = ('%s', '%s::real[]')
+        col_type_tuple = ('%s', "replace(replace(%s::text, '{', '['), '}', ']')::vecf16")
         if metadata[0] is not None:
             for col_name in list(metadata[0].keys()):
                 col_name_tuple += (col_name,)
@@ -75,7 +75,8 @@ class PGVectorUploader(BaseUploader):
             create_index_command = f"""
 CREATE INDEX ON {PGVECTOR_INDEX} USING vectors (vector {cls.distance}) WITH (options=$$
 optimizing.optimizing_threads=8
-[algorithm.hnsw]
+segment.max_sealed_segment_size=5000000
+[indexing.hnsw]
 $$);
 """
 
@@ -86,5 +87,10 @@ $$);
             cls.conn.commit()
         # wait index finished
         with cls.conn.cursor() as cur:
-            cur.execute("SELECT phase, tuples_done, tuples_total FROM pg_stat_progress_create_index;")
+            indexing = [True for _ in range(10)]
+            while indexing.count(True) != 0:
+                time.sleep(1)
+                cur.execute("SELECT idx_indexing FROM pg_vector_index_info;")
+                indexing.pop(0)
+                indexing.append(cur.fetchone()[0])
             cls.conn.commit()

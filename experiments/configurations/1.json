@@ -1,12 +1,12 @@
 [
   {
-    "name": "pgvector-v0.1.3-single_node-HNSW-m-12-efc-100-dataset-laion-768-5m-ip-probability-upload_parallel-16-batch_size-64",
+    "name": "pgvectors",
     "result_group": "single_search",
     "engine": "pgvector",
     "platform": "CloudTest_v0.0.4",
     "index_type": "HNSW",
-    "dataset": "laion-768-5m-ip-probability",
-    "version": "pg15-latest",
+    "dataset": "laion-768-5m-ip",
+    "version": "pg16-v0.1.13",
     "branch": "master",
     "commit": "sha256:38c7e5c4fa3afd48fb4911b3f96489ac287b59f8bfdd9b7b55c0eca898ffec21",
     "remark": "pgvector implemented in RUST",
@@ -16,46 +16,41 @@
       "host": "127.0.0.1",
       "port": 5432,
       "user": "postgres",
-      "password": ""
+      "password": "pgvectors"
     },
     "collection_params": {},
     "search_params": [
       {
-        "parallel": 4,
+        "parallel": 8,
         "top": 10,
         "params": {
-          "hnsw.ef_search": 100,
-          "vbase_range": 100
-        },
-        "query_meta": {
-          "probability": 0.5
+          "hnsw.ef_search": 50
         }
       },
       {
-        "parallel": 4,
+        "parallel": 8,
         "top": 10,
         "params": {
-          "hnsw.ef_search": 100,
-          "vbase_range": 100
-        },
-        "query_meta": {
-          "probability": 0.1
+          "hnsw.ef_search": 100
         }
       },
       {
-        "parallel": 4,
+        "parallel": 8,
         "top": 10,
         "params": {
-          "hnsw.ef_search": 100,
-          "vbase_range": 100
-        },
-        "query_meta": {
-          "probability": 0.01
+          "hnsw.ef_search": 200
+        }
+      },
+      {
+        "parallel": 8,
+        "top": 10,
+        "params": {
+          "hnsw.ef_search": 500
         }
       }
     ],
     "upload_params": {
-      "parallel": 8,
+      "parallel": 16,
       "batch_size": 64,
       "index_params": {
         "m": 12,

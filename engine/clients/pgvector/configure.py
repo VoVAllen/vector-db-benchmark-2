@@ -47,7 +47,7 @@ class PGVectorConfigurator(BaseConfigurator):
             print(f"Failed to init PGVector client: {e}")
 
         # Base command
-        command = f"CREATE TABLE {PGVECTOR_INDEX} (id bigserial PRIMARY KEY, vector vector({vector_size}))"
+        command = f"CREATE TABLE {PGVECTOR_INDEX} (id bigserial PRIMARY KEY, vector vecf16({vector_size}))"
         # Add extra columns if provided
         if extra_columns_name and extra_columns_type and len(extra_columns_name) == len(extra_columns_type) and len(
                 extra_columns_name) > 0:

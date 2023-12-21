@@ -38,7 +38,8 @@ class PGVectorSearcher(BaseSearcher):
                 else:
                     # pgvector_rs only support hnsw
                     cur.execute(f"SET LOCAL vectors.k = {cls.search_params['params']['hnsw.ef_search']};")
-                    cur.execute(f"SET LOCAL vectors.vbase_range = {cls.search_params['params']['vbase_range']};")
+                    # cur.execute(f"SET LOCAL vectors.enable_prefilter = on;")
+                    # cur.execute(f"SET LOCAL vectors.enable_vbase = on;")
                     break
             meta_conditions = cls.parser.parse(meta_conditions)
             if meta_conditions:
