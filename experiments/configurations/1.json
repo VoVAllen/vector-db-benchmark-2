@@ -5,7 +5,7 @@
     "engine": "pgvector",
     "platform": "CloudTest_v0.0.4",
     "index_type": "HNSW",
-    "dataset": "laion-768-5m-ip",
+    "dataset": "laion-768-5m-ip-probability",
     "version": "pg16-v0.1.13",
     "branch": "master",
     "commit": "sha256:38c7e5c4fa3afd48fb4911b3f96489ac287b59f8bfdd9b7b55c0eca898ffec21",
@@ -53,7 +53,7 @@
       "parallel": 16,
       "batch_size": 64,
       "index_params": {
-        "m": 12,
+        "m": 16,
         "ef_construction": 100
       },
       "index_type": "hnsw",

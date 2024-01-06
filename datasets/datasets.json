@@ -688,5 +688,18 @@
     "group_name": "openai-1536-50w-cosine",
     "tag": "no-filter",
     "link": "https://mqdb-release-1253802058.cos.ap-beijing.myqcloud.com/datasets/openai-50w-cosine.hdf5"
+  },
+  {
+    "name": "openai-1536-100w-cosine",
+    "result_group": "single_search",
+    "vector_size": 1536,
+    "vector_count": 1000000,
+    "queries": 1000,
+    "distance": "cosine",
+    "type": "h5",
+    "path": "downloaded/openai-1536-100w-cosine/openai-1536-100w-cosine.hdf5",
+    "group_name": "openai-1536-100w-cosine",
+    "tag": "no-filter",
+    "link": ""
   }
 ]

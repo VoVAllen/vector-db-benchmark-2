@@ -30,7 +30,7 @@ class PGVectorUploader(BaseUploader):
             raise RuntimeError("PGVector batch upload unhealthy")
         # Getting the names of structured data columns based on the first meta information.
         col_name_tuple = ('id', 'vector')
-        col_type_tuple = ('%s', "replace(replace(%s::text, '{', '['), '}', ']')::vecf16")
+        col_type_tuple = ('%s', "%s::real[]")
         if metadata[0] is not None:
             for col_name in list(metadata[0].keys()):
                 col_name_tuple += (col_name,)
@@ -77,6 +77,8 @@ CREATE INDEX ON {PGVECTOR_INDEX} USING vectors (vector {cls.distance}) WITH (opt
 optimizing.optimizing_threads=8
 segment.max_sealed_segment_size=5000000
 [indexing.hnsw]
+m=16
+ef_construction=300
 $$);
 """
 
