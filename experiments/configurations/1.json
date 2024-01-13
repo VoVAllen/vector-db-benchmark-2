@@ -50,8 +50,8 @@
       }
     ],
     "upload_params": {
-      "parallel": 16,
-      "batch_size": 64,
+      "parallel": 4,
+      "batch_size": 4096,
       "index_params": {
         "m": 12,
         "ef_construction": 100

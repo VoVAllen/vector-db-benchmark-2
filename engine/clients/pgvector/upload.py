@@ -1,3 +1,4 @@
+import io
 import time
 from typing import List, Optional
 import psycopg2
@@ -30,7 +31,7 @@ class PGVectorUploader(BaseUploader):
             raise RuntimeError("PGVector batch upload unhealthy")
         # Getting the names of structured data columns based on the first meta information.
         col_name_tuple = ('id', 'vector')
-        col_type_tuple = ('%s', "replace(replace(%s::text, '{', '['), '}', ']')::vecf16")
+        col_type_tuple = ('%s', "%s")
         if metadata[0] is not None:
             for col_name in list(metadata[0].keys()):
                 col_name_tuple += (col_name,)
@@ -38,7 +39,7 @@ class PGVectorUploader(BaseUploader):
 
         insert_data = []
         for i in range(0, len(ids)):
-            temp_tuple = (ids[i], vectors[i])
+            temp_tuple = (ids[i], str(vectors[i]))
             if metadata[i] is not None:
                 for col_name in list(metadata[i].keys()):
                     value = metadata[i][col_name]
@@ -48,12 +49,18 @@ class PGVectorUploader(BaseUploader):
                     else:
                         temp_tuple += (value,)
             insert_data.append(temp_tuple)
+        # Create a StringIO object and write your list of tuples to it as a CSV
+        output = io.StringIO()
+        for row in insert_data:
+            output.write('|'.join(map(str, row)) + '\n')  # Using | as a delimiter, for example
+        output.seek(0)  # Be sure to reset the position to the start of the StringIO object
+        copy_command = f"COPY {PGVECTOR_INDEX} ({', '.join(col_name_tuple)}) FROM STDIN WITH CSV DELIMITER '|'"
 
-        insert_command = f"INSERT INTO {PGVECTOR_INDEX} ({', '.join(col_name_tuple)}) VALUES ({', '.join(col_type_tuple)})"
+        # insert_command = f"INSERT INTO {PGVECTOR_INDEX} ({', '.join(col_name_tuple)}) VALUES ({', '.join(col_type_tuple)})"
         while True:
             try:
                 with cls.conn.cursor() as cur:
-                    cur.executemany(insert_command, insert_data)
+                    cur.copy_expert(copy_command, output)
                     cls.conn.commit()
                 break
             except Exception as e:
@@ -74,9 +81,10 @@ class PGVectorUploader(BaseUploader):
         if cls.engine_type == "rust":
             create_index_command = f"""
 CREATE INDEX ON {PGVECTOR_INDEX} USING vectors (vector {cls.distance}) WITH (options=$$
-optimizing.optimizing_threads=8
+optimizing.optimizing_threads=4
 segment.max_sealed_segment_size=5000000
 [indexing.hnsw]
+# [indexing.hnsw.quantization.scalar]
 $$);
 """
 
